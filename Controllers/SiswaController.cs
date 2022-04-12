@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 namespace WebApiNetCore.Controllers;
 using WebApiNetCore.Models;
 using MySql.Data.MySqlClient;
@@ -71,4 +72,71 @@ public class SiswaController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPut("{id}")]
+    public JsonResult Put(int id, Siswa siswa)
+    {
+        string query = @"
+                    update siswa set 
+                    nis = @nis,
+                    nama = @nama,
+                    alamat = @alamat,
+                    telepon = @telepon
+                    where id=@id;
+        ";
+
+        DataTable table = new DataTable();
+        string sqlDataSource = configuration.GetConnectionString("WebApiDatabase");
+        MySqlDataReader myReader;
+        using (MySqlConnection conn = new MySqlConnection(sqlDataSource))
+        {
+            conn.Open();
+            using (MySqlCommand myCommand = new MySqlCommand(query, conn))
+            {
+                myCommand.Parameters.AddWithValue("@id", id);
+                myCommand.Parameters.AddWithValue("@nis", siswa.Nis);
+                myCommand.Parameters.AddWithValue("@nama", siswa.Nama);
+                myCommand.Parameters.AddWithValue("@alamat", siswa.Alamat);
+                myCommand.Parameters.AddWithValue("@telepon", siswa.Telepon);
+
+                myReader = myCommand.ExecuteReader();
+                table.Load(myReader);
+
+                myReader.Close();
+                conn.Close();
+            }
+        }
+
+        return new JsonResult("Updated Successfully");
+    }
+
+    [HttpDelete("{id}")]
+    public JsonResult Delete(int id)
+    {
+        string query = @"
+                    delete from siswa
+                    where id=@id;
+        ";
+
+        DataTable table = new DataTable();
+        string sqlDataSource = configuration.GetConnectionString("WebApiDatabase");
+        MySqlDataReader myReader;
+        using (MySqlConnection conn = new MySqlConnection(sqlDataSource))
+        {
+            conn.Open();
+            using (MySqlCommand myCommand = new MySqlCommand(query, conn))
+            {
+                myCommand.Parameters.AddWithValue("@id", id);
+
+                myReader = myCommand.ExecuteReader();
+                table.Load(myReader);
+
+                myReader.Close();
+                conn.Close();
+            }
+        }
+
+        return new JsonResult("Deleted Successfully");
+    }
+
 }
