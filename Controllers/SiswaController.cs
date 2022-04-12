@@ -49,4 +49,26 @@ public class SiswaController : ControllerBase
 
         return items;
     }
+
+    [HttpPost]
+    public IActionResult Create(Siswa siswa){
+        if (!ModelState.IsValid)
+            return BadRequest("Invalid data.");
+
+        MySqlConnection conn = new MySqlConnection{
+            ConnectionString = configuration.GetConnectionString("WebApiDatabase")
+        };
+        conn.Open();
+
+        MySqlCommand command = conn.CreateCommand();
+        command.CommandText = "INSERT INTO siswa (nis, nama, alamat, telepon) VALUES (?nis, ?nama, ?alamat, ?telepon)";
+        command.Parameters.AddWithValue("?nis", siswa.Nis);
+        command.Parameters.AddWithValue("?nama", siswa.Nama);
+        command.Parameters.AddWithValue("?alamat", siswa.Alamat);
+        command.Parameters.AddWithValue("?telepon", siswa.Telepon);
+        command.ExecuteNonQuery();
+        conn.Close();
+
+        return Ok();
+    }
 }
