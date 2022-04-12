@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "HRpR7zt10XeMpHEwIWazVDaxodJe18TLwxWwvfNaVms=",
+  "Source": "WebApiNetCore",
+  "BasePath": "_content/WebApiNetCore",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
